@@ -21,10 +21,6 @@ import kotlinx.coroutines.withContext
 
 class BasicCoroutinesDemoFragment : BaseFragment() {
 
-    private val defaultDispatcher = Dispatchers.Default
-    private val mainScope = CoroutineScope(Dispatchers.Main.immediate)
-    private val defaultScope = CoroutineScope(mainScope.coroutineContext + defaultDispatcher)
-
     override val screenTitle get() = ScreenReachableFromHome.BASIC_COROUTINES_DEMO.description
 
     private lateinit var btnStart: Button

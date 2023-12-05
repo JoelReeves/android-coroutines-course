@@ -21,10 +21,6 @@ import kotlinx.coroutines.withContext
 
 class Exercise1Fragment : BaseFragment() {
 
-    private val defaultDispatcher = Dispatchers.Default
-    private val mainScope = CoroutineScope(Dispatchers.Main.immediate)
-    private val defaultScope = CoroutineScope(mainScope.coroutineContext + defaultDispatcher)
-
     override val screenTitle get() = ScreenReachableFromHome.EXERCISE_1.description
 
     private lateinit var edtUserId: EditText

@@ -18,8 +18,6 @@ import kotlinx.coroutines.*
 
 class CoroutinesCancellationDemoFragment : BaseFragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
-
     override val screenTitle get() = ScreenReachableFromHome.COROUTINES_CANCELLATION_DEMO.description
 
     private lateinit var btnStart: Button
@@ -36,7 +34,7 @@ class CoroutinesCancellationDemoFragment : BaseFragment() {
         btnStart.setOnClickListener {
             logThreadInfo("button callback")
 
-            job = coroutineScope.launch {
+            job = mainScope.launch {
                 btnStart.isEnabled = false
                 val iterationsCount = executeBenchmark()
                 Toast.makeText(requireContext(), "$iterationsCount", Toast.LENGTH_SHORT).show()
@@ -60,7 +58,7 @@ class CoroutinesCancellationDemoFragment : BaseFragment() {
 
         updateRemainingTime(benchmarkDurationSeconds)
 
-        return withContext(Dispatchers.Default) {
+        return withContext(defaultScope.coroutineContext) {
             logThreadInfo("benchmark started")
 
             val stopTimeNano = System.nanoTime() + benchmarkDurationSeconds * 1_000_000_000L
