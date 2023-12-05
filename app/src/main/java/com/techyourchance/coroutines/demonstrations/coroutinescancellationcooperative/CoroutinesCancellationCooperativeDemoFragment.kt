@@ -16,8 +16,6 @@ import kotlinx.coroutines.*
 
 class CoroutinesCancellationCooperativeDemoFragment : BaseFragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
-
     override val screenTitle get() = ScreenReachableFromHome.COROUTINES_CANCELLATION_COOPERATIVE_DEMO.description
 
     private lateinit var benchmarkUseCase: CancellableBenchmarkUseCase
@@ -41,11 +39,11 @@ class CoroutinesCancellationCooperativeDemoFragment : BaseFragment() {
 
             val benchmarkDurationSeconds = 5
 
-            coroutineScope.launch {
+            mainScope.launch {
                 updateRemainingTime(benchmarkDurationSeconds)
             }
 
-            coroutineScope.launch {
+            mainScope.launch {
                 try {
                     btnStart.isEnabled = false
                     val iterationsCount = benchmarkUseCase.executeBenchmark(benchmarkDurationSeconds)
@@ -66,7 +64,7 @@ class CoroutinesCancellationCooperativeDemoFragment : BaseFragment() {
     override fun onStop() {
         logThreadInfo("onStop()")
         super.onStop()
-        coroutineScope.coroutineContext.cancelChildren()
+        mainScope.coroutineContext.cancelChildren()
     }
 
 

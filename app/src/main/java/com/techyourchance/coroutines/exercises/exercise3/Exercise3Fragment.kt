@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.techyourchance.coroutines.exercises.exercise3
 
 import android.os.Bundle
@@ -12,13 +14,19 @@ import androidx.fragment.app.Fragment
 import com.techyourchance.coroutines.R
 import com.techyourchance.coroutines.common.BaseFragment
 import com.techyourchance.coroutines.common.ThreadInfoLogger
+import com.techyourchance.coroutines.common.ThreadInfoLogger.logThreadInfo
 import com.techyourchance.coroutines.exercises.exercise1.GetReputationEndpoint
 import com.techyourchance.coroutines.home.ScreenReachableFromHome
 import kotlinx.coroutines.*
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalTime
+import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
+@OptIn(ExperimentalTime::class)
 class Exercise3Fragment : BaseFragment() {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
 
     override val screenTitle get() = ScreenReachableFromHome.EXERCISE_3.description
 
@@ -55,11 +63,17 @@ class Exercise3Fragment : BaseFragment() {
         btnGetReputation = view.findViewById(R.id.btn_get_reputation)
         btnGetReputation.setOnClickListener {
             logThreadInfo("button callback")
-            job = coroutineScope.launch {
+
+            job = mainScope.launch {
+                updateElapsedTime()
+            }
+
+            mainScope.launch {
                 btnGetReputation.isEnabled = false
                 val reputation = getReputationForUser(edtUserId.text.toString())
                 Toast.makeText(requireContext(), "reputation: $reputation", Toast.LENGTH_SHORT).show()
                 btnGetReputation.isEnabled = true
+                job?.cancel()
             }
         }
 
@@ -68,12 +82,24 @@ class Exercise3Fragment : BaseFragment() {
 
     override fun onStop() {
         super.onStop()
-        job?.cancel()
+        mainScope.coroutineContext.cancelChildren()
         btnGetReputation.isEnabled = true
+        txtElapsedTime.text
+    }
+
+    private suspend fun updateElapsedTime() {
+        val startTime = Instant.now()
+
+        while (true) {
+            delay(100)
+            val endTime = Instant.now()
+            val elapsedTime = Duration.between(startTime, endTime).toMillis()
+            txtElapsedTime.text = "Elapsed time: $elapsedTime ms"
+        }
     }
 
     private suspend fun getReputationForUser(userId: String): Int {
-        return withContext(Dispatchers.Default) {
+        return withContext(defaultScope.coroutineContext) {
             logThreadInfo("getReputationForUser()")
             getReputationEndpoint.getReputation(userId)
         }

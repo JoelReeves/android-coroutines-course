@@ -16,8 +16,6 @@ import kotlinx.coroutines.*
 
 class ConcurrentCoroutinesDemoFragment : BaseFragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
-
     override val screenTitle get() = ScreenReachableFromHome.CONCURRENT_COROUTINES_DEMO.description
 
     private lateinit var btnStart: Button
@@ -37,11 +35,11 @@ class ConcurrentCoroutinesDemoFragment : BaseFragment() {
 
             val benchmarkDurationSeconds = 5
 
-            jobCounter = coroutineScope.launch {
+            jobCounter = mainScope.launch {
                 updateRemainingTime(benchmarkDurationSeconds)
             }
 
-            job = coroutineScope.launch {
+            job = mainScope.launch {
                 btnStart.isEnabled = false
                 val iterationsCount = executeBenchmark(benchmarkDurationSeconds)
                 Toast.makeText(requireContext(), "$iterationsCount", Toast.LENGTH_SHORT).show()
@@ -63,7 +61,7 @@ class ConcurrentCoroutinesDemoFragment : BaseFragment() {
         }
     }
 
-    private suspend fun executeBenchmark(benchmarkDurationSeconds: Int) = withContext(Dispatchers.Default) {
+    private suspend fun executeBenchmark(benchmarkDurationSeconds: Int) = withContext(defaultScope.coroutineContext) {
         logThreadInfo("benchmark started")
 
         val stopTimeNano = System.nanoTime() + benchmarkDurationSeconds * 1_000_000_000L

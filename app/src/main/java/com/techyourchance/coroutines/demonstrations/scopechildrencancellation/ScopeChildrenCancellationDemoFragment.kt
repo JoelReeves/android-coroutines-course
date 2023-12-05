@@ -16,8 +16,6 @@ import kotlinx.coroutines.*
 
 class ScopeChildrenCancellationDemoFragment : BaseFragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
-
     override val screenTitle get() = ScreenReachableFromHome.SCOPE_CHILDREN_CANCELLATION_DEMO.description
 
     private lateinit var btnStart: Button
@@ -36,11 +34,11 @@ class ScopeChildrenCancellationDemoFragment : BaseFragment() {
 
             val benchmarkDurationSeconds = 5
 
-            coroutineScope.launch {
+            mainScope.launch {
                 updateRemainingTime(benchmarkDurationSeconds)
             }
 
-            coroutineScope.launch {
+            mainScope.launch {
                 btnStart.isEnabled = false
                 val iterationsCount = executeBenchmark(benchmarkDurationSeconds)
                 Toast.makeText(requireContext(), "$iterationsCount", Toast.LENGTH_SHORT).show()
@@ -56,7 +54,7 @@ class ScopeChildrenCancellationDemoFragment : BaseFragment() {
     override fun onStop() {
         logThreadInfo("onStop()")
         super.onStop()
-        coroutineScope.coroutineContext.cancelChildren()
+        mainScope.coroutineContext.cancelChildren()
         if (hasBenchmarkBeenStartedOnce) {
             btnStart.isEnabled = true
             txtRemainingTime.text = "done!"
