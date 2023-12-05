@@ -21,7 +21,9 @@ import kotlinx.coroutines.withContext
 
 class BasicCoroutinesDemoFragment : BaseFragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
+    private val defaultDispatcher = Dispatchers.Default
+    private val mainScope = CoroutineScope(Dispatchers.Main.immediate)
+    private val defaultScope = CoroutineScope(mainScope.coroutineContext + defaultDispatcher)
 
     override val screenTitle get() = ScreenReachableFromHome.BASIC_COROUTINES_DEMO.description
 
@@ -37,7 +39,7 @@ class BasicCoroutinesDemoFragment : BaseFragment() {
         btnStart.setOnClickListener {
             logThreadInfo("button callback")
 
-            coroutineScope.launch {
+            mainScope.launch {
                 btnStart.isEnabled = false
                 val iterationsCount = executeBenchmark()
                 Toast.makeText(requireContext(), "$iterationsCount", Toast.LENGTH_SHORT).show()
@@ -54,7 +56,7 @@ class BasicCoroutinesDemoFragment : BaseFragment() {
 
         updateRemainingTime(benchmarkDurationSeconds)
 
-        return withContext(Dispatchers.Default) {
+        return withContext(defaultScope.coroutineContext) {
             logThreadInfo("benchmark started")
 
             val stopTimeNano = System.nanoTime() + benchmarkDurationSeconds * 1_000_000_000L
