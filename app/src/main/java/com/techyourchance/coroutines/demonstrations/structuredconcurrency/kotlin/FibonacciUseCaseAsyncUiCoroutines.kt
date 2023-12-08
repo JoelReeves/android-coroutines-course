@@ -19,13 +19,10 @@ internal class FibonacciUseCaseAsyncUiCoroutines(private val bgDispatcher: Corou
     }
 
     private suspend fun computeFibonacciBg(index: Int): BigInteger = withContext(bgDispatcher) {
-        if (index == 0) {
-            BigInteger("0")
-        } else if (index == 1) {
-            BigInteger("1")
-        } else {
-            computeFibonacciBg(index - 1).add(computeFibonacciBg(index - 2))
+        when (index) {
+            0 -> BigInteger("0")
+            1 -> BigInteger("1")
+            else -> computeFibonacciBg(index - 1).add(computeFibonacciBg(index - 2))
         }
     }
-
 }

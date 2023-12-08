@@ -7,7 +7,7 @@ import androidx.annotation.WorkerThread;
 class FibonacciUseCaseAsync {
 
     public interface Callback {
-        public void onFibonacciComputed(BigInteger result);
+        void onFibonacciComputed(BigInteger result);
     }
 
     public void computeFibonacci(int index, Callback callback) {

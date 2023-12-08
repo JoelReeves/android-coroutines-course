@@ -14,7 +14,7 @@ class FibonacciUseCaseAsyncUiThreadPoster {
 
 
     public interface Callback {
-        public void onFibonacciComputed(BigInteger result);
+        void onFibonacciComputed(BigInteger result);
     }
 
     private final BackgroundThreadPoster mBackgroundThreadPoster;

@@ -24,8 +24,6 @@ import kotlinx.coroutines.launch
 
 class Exercise4Fragment : BaseFragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main.immediate)
-
     override val screenTitle get() = ScreenReachableFromHome.EXERCISE_4.description
 
     private lateinit var edtArgument: EditText
@@ -69,9 +67,8 @@ class Exercise4Fragment : BaseFragment() {
 
             val argument = Integer.valueOf(edtArgument.text.toString())
 
-            coroutineScope.launch {
-                val result = factorialUseCase.computeFactorial(argument, getTimeout())
-                when (result) {
+            mainScope.launch {
+                when (val result = factorialUseCase.computeFactorial(argument, getTimeout())) {
                     is FactorialUseCase.Result.Success -> onFactorialComputed(result.result)
                     is FactorialUseCase.Result.Timeout -> onFactorialComputationTimedOut()
                 }
@@ -83,7 +80,7 @@ class Exercise4Fragment : BaseFragment() {
 
     override fun onStop() {
         super.onStop()
-        coroutineScope.cancel()
+        mainScope.cancel()
     }
 
     private fun onFactorialComputed(result: BigInteger) {

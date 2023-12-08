@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
@@ -27,48 +28,40 @@ class FibonacciUseCaseUiCoroutinesTest {
     }
 
     @Test
-    fun computeFibonacci_0_returns0() {
-        runBlocking {
-            // Arrange
-            // Act
-            val result = SUT.computeFibonacci(0)
-            // Assert
-            assertThat(result, `is`(BigInteger("0")))
-        }
+    fun computeFibonacci_0_returns0() = runTest {
+        // Arrange
+        // Act
+        val result = SUT.computeFibonacci(0)
+        // Assert
+        assertThat(result, `is`(BigInteger("0")))
     }
 
     @Test
-    fun computeFibonacci_1_returns1() {
-        runBlocking {
-            // Arrange
-            // Act
-            val result = SUT.computeFibonacci(1)
-            // Assert
-            assertThat(result, `is`(BigInteger("1")))
-        }
+    fun computeFibonacci_1_returns1() = runTest {
+        // Arrange
+        // Act
+        val result = SUT.computeFibonacci(1)
+        // Assert
+        assertThat(result, `is`(BigInteger("1")))
     }
 
 
     @Test
-    fun computeFibonacci_10_returnsCorrectResult() {
-        runBlocking {
-            // Arrange
-            // Act
-            val result = SUT.computeFibonacci(10)
-            // Assert
-            assertThat(result, `is`(BigInteger("55")))
-        }
+    fun computeFibonacci_10_returnsCorrectResult() = runTest {
+        // Arrange
+        // Act
+        val result = SUT.computeFibonacci(10)
+        // Assert
+        assertThat(result, `is`(BigInteger("55")))
     }
 
     @Test
-    fun computeFibonacci_30_returnsCorrectResult() {
-        runBlocking {
-            // Arrange
-            // Act
-            val result = SUT.computeFibonacci(30)
-            // Assert
-            assertThat(result, `is`(BigInteger("832040")))
-        }
+    fun computeFibonacci_30_returnsCorrectResult() = runTest {
+        // Arrange
+        // Act
+        val result = SUT.computeFibonacci(30)
+        // Assert
+        assertThat(result, `is`(BigInteger("832040")))
     }
 
 }
